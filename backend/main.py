@@ -4,12 +4,20 @@ from db import save_item,get_items
 
 import requests
 from bs4 import BeautifulSoup
+from embed import make_embeddings
+from db import save_chunk
 
 app = FastAPI()
 
 class noteInput(BaseModel):
     text: str
     source: str
+
+def split_text(text, max_length=500):
+    chunks = []
+    for i in range(0, len(text), max_length):
+        chunks.append(text[i:i+max_length])
+    return chunks
 
 @app.post("/ingest")
 def save_note(data: noteInput):
@@ -26,7 +34,14 @@ def save_note(data: noteInput):
     else:
         final_text = data.text
 
+    
+    item_id = save_item(final_text, data.source)
+    chunks = split_text(final_text)
+    embeddings=make_embeddings(chunks)
 
+    for chunk ,embedding in zip(chunks,embeddings):
+        save_chunk(item_id,chunk,embedding)
+        
     save_item(data.text, data.source)
     return {"status": "saved"}
 
@@ -40,3 +55,4 @@ def split_text(text, max_length=500):
     for i in range(0, len(text), max_length):
         chunks.append(text[i:i+max_length])
     return chunks
+
