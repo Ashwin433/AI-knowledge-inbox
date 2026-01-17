@@ -34,3 +34,9 @@ def save_note(data: noteInput):
 def items():
     return get_items()
 
+
+def split_text(text, max_length=500):
+    chunks = []
+    for i in range(0, len(text), max_length):
+        chunks.append(text[i:i+max_length])
+    return chunks
