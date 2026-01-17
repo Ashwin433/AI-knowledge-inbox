@@ -7,7 +7,7 @@ cursor=conn.cursor()
 cursor.execute(""""
 CREATE TABLE IF NOT EXISTS items (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
-    content TEXT,
+    text TEXT,
     source TEXT,
     created_at TEXT
                )
@@ -15,17 +15,17 @@ CREATE TABLE IF NOT EXISTS items (
 
 conn.commit()
 
-def save_item(content, source):
+def save_item(text, source):
     created_at = datetime.utcnow().isoformat()
     cursor.execute("""
-    INSERT INTO items (content, source, created_at)
+    INSERT INTO items (text, source, created_at)
     VALUES (?, ?, ?)
-    """, (content, source, created_at))
+    """, (text, source, created_at))
     conn.commit()
     return cursor.lastrowid
 
 def get_items():
     cursor.execute("""
-    SELECT id, content, source, created_at
+    SELECT id, text, source, created_at
     FROM items""")
     return cursor.fetchall()
