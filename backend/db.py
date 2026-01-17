@@ -93,3 +93,5 @@ def get_chunks():
     conn.close()
 
     return [(r[0], json.loads(r[1])) for r in rows]
+
+init_db()

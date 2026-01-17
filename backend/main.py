@@ -41,18 +41,11 @@ def save_note(data: noteInput):
 
     for chunk ,embedding in zip(chunks,embeddings):
         save_chunk(item_id,chunk,embedding)
-        
-    save_item(data.text, data.source)
-    return {"status": "saved"}
+    return {"status":"success"}
 
 @app.get("/items")
 def items():
     return get_items()
 
 
-def split_text(text, max_length=500):
-    chunks = []
-    for i in range(0, len(text), max_length):
-        chunks.append(text[i:i+max_length])
-    return chunks
 
