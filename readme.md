@@ -67,6 +67,19 @@ venv\Scripts\activate
 macOS / Linux
 source venv/bin/activate
 
+Install backend dependancies
+pip install -r requirements.txt
+
+start the backend server
+uvicorn main:app --reload
+
+
+Step 3: Frontend setup(React)
+In separate terminal start a fronted
+cd frontend/ai-knowledge-ui
+npm install
+npm run dev
+
 
 
 
