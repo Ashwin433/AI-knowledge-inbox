@@ -11,10 +11,10 @@ def similarity(vec1, vec2):
 
 
 def find_similar(query_embedding, chunks, top_k=5):
-    scores = []
-    for text,embeddings in chunks:
-        scores=similarity(query_embedding,embeddings)
-        scores.append((scores,text))
+    scored = []
+    for text,embedding in chunks:
+        score = similarity(query_embedding,embedding)
+        scored.append((score,text))
 
-    scores.sort(reverse=True)
-    return [text for _, text in scores[:top_k]]  
+    scored.sort(reverse=True)
+    return [text for _, text in scored[:top_k]]  

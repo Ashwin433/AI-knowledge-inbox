@@ -1,6 +1,8 @@
 from fastapi import FastAPI,HTTPException
 from pydantic import BaseModel
-from db import save_item,get_items
+from db import save_item,get_items,get_chunks
+from search import find_similar
+from rag import answer
 
 import requests
 from bs4 import BeautifulSoup
@@ -22,7 +24,12 @@ def split_text(text, max_length=500):
 @app.post("/ingest")
 def save_note(data: noteInput):
 
-    if data.source == "url":
+    source = data.source.strip().lower()
+
+    if source not in ["url","note"]:
+        raise HTTPException(status_code=400,detail="Invalid source type")
+
+    if source == "url":
         response = requests.get(data.text,timeout=10)
         soup = BeautifulSoup(response.content,"html.parser")
 
@@ -35,7 +42,7 @@ def save_note(data: noteInput):
         final_text = data.text
 
     
-    item_id = save_item(final_text, data.source)
+    item_id = save_item(final_text,source)
     chunks = split_text(final_text)
     embeddings=make_embeddings(chunks)
 
@@ -48,4 +55,15 @@ def items():
     return get_items()
 
 
+class questionInput(BaseModel):
+    question: str
 
+@app.post("/query")
+def query(data: questionInput):
+    chunks = get_chunks()
+    query_embedding = make_embeddings([data.question])[0]
+
+    top_chunks = find_similar(query_embedding,chunks,top_k=5)
+    final_answer = answer(data.question,top_chunks)
+
+    return {"answer": final_answer,"sources": top_chunks}
