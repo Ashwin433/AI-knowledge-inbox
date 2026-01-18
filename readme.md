@@ -51,3 +51,22 @@ git clone <your-github-repo-url>
 cd AI-knowledge-inbox
 
 
+Step 2: Backend setup (FastAPI)
+
+I used a Python virtual environment to keep backend dependencies isolated.
+
+cd backend
+python -m venv venv
+
+
+Activate the virtual environment:
+
+Windows
+venv\Scripts\activate
+
+macOS / Linux
+source venv/bin/activate
+
+
+
+
