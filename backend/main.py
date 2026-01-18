@@ -39,8 +39,16 @@ def save_note(data: noteInput):
         raise HTTPException(status_code=400,detail="Invalid source type")
 
     if source == "url":
-        response = requests.get(data.text,timeout=10)
-        soup = BeautifulSoup(response.content,"html.parser")
+
+        if not data.text.startswith("http://") and not data.text.startswith("https://"):
+            data.text = "https://" + data.text
+        try:
+            response = requests.get(data.text,timeout=10)
+            response.raise_for_status()
+        except requests.RequestException as e:
+            raise HTTPException(status_code=400,detail=f"Failed to fetch URL: {e}")
+        
+        soup = BeautifulSoup(response.text,"html.parser")
 
         for tag in soup(["script","style"]):
             tag.decompose()

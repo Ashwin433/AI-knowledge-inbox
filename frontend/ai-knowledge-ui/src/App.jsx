@@ -9,7 +9,8 @@ function App() {
   const [text,setText] = useState("");
   const [source,setSource] = useState("note");
   const [question,setQuestion] = useState("");
-
+  const [answer,setAnswer] = useState("");
+  const [sources,setSources] = useState([]);
 
   const handleIngest = async () => {
     console.log("ingest clicked", text, source);
@@ -24,7 +25,7 @@ function App() {
 
       const result = await response.json();
       console.log("Ingest response:", result);
-      alert("Text ingested successfully!");
+      alert("note ingested successfully!");
       setText("");
     } catch (error) {
       console.error("Error ingesting text:", error);
@@ -47,7 +48,8 @@ function App() {
     const result = await response.json();
     console.log("Query response:", result);
     alert("Question answered successfully!");
-    setQuestion("")
+    setAnswer(result.answer);
+    setSources(result.sources);
   } catch (error) {
     console.error("Error asking question:", error);
     alert("Failed to get answer.");
@@ -87,6 +89,23 @@ function App() {
         />
         <br/><br/>
         <button onClick={handleQuery}>Ask</button>
+
+        {answer && (
+          <>
+          <h4>Answer:</h4>
+          <p>{answer}</p>
+
+          <h4>Sources:
+            <ul>
+              {sources.map((src, index) => (
+                <li key={index}>{src.slice(0, 100)}</li>
+              ))}
+            </ul>
+          </h4>
+          </>
+
+
+        )}
 
     </div>
   );
