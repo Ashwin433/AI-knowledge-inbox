@@ -43,6 +43,14 @@ FRONTEND:
 -React(Vite)
 -inliine styling
 
+Design Decisions & Tradeoffs:
+
+SQLite was chosen for simplicity and ease of local setup. It works well for a single-user demo without requiring external services.
+
+Local embeddings are used to avoid API keys and rate limits, and to keep the system fully runnable offline after the first run.
+
+Chunking is done using a fixed-size strategy. This keeps the logic simple and predictable, even though it is not optimized for semantic boundaries.
+
 
 Step 1: Clone the repository
 
