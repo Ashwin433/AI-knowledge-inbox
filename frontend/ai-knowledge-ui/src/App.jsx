@@ -8,6 +8,8 @@ function App() {
 
   const [text,setText] = useState("");
   const [source,setSource] = useState("note");
+  const [question,setQuestion] = useState("");
+
 
   const handleIngest = async () => {
     console.log("ingest clicked", text, source);
@@ -29,6 +31,29 @@ function App() {
       alert("Failed to ingest text.");
     }
   };
+
+  const handleQuery = async () => {
+    console.log("question asked",question);
+    try{
+
+    const response = await fetch(`${API_URL}/query`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ question }),
+    });
+
+    const result = await response.json();
+    console.log("Query response:", result);
+    alert("Question answered successfully!");
+    setQuestion("")
+  } catch (error) {
+    console.error("Error asking question:", error);
+    alert("Failed to get answer.");
+  }
+  };
+
   return (
     <div className="App" style={{padding:"20px",fontFamily: "Arial"}}>
       <h1>AI Knowledge Inbox</h1>
@@ -49,6 +74,19 @@ function App() {
         <br/><br/>
 
         <button onClick={handleIngest}>Save</button>
+
+        <hr/>
+        <h3>Ask Question</h3>
+
+        <input
+        type="text"
+        size={60}
+        placeholder="Enter your question"
+        value={question}
+        onChange={(e) => setQuestion(e.target.value)}
+        />
+        <br/><br/>
+        <button onClick={handleQuery}>Ask</button>
 
     </div>
   );
